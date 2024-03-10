@@ -6,7 +6,7 @@ import axios from "axios"
 import * as z from "zod"
 import Heading from "@/components/heading"
 import  {Loader}  from "@/components/loader"
-import {  MessageSquare, Router } from "lucide-react"
+import {  MusicIcon} from "lucide-react"
 import {  useForm } from "react-hook-form"
 import  {Empty}  from "@/components/empty"
 import { formSchema } from "./constants"
@@ -16,17 +16,16 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-
-import createCompletion from "openai"
-import { cn } from "@/lib/utils"
-import { UserAvatar } from "@/components/user-avatar"
-import { BotAvatar } from "@/components/bot-avater"
 import { useProModal } from "@/hooks/use-prop-model"
 
-const Conversation=()=>{
-    const proModal= useProModal()
+
+
+
+
+const Musicpage=()=>{
+    const proModal=useProModal()
     const router= useRouter();
-    const[messages, setMessages]=useState<createCompletion[]>([])
+    const [music,setMusic]=useState<string>()
 
     const form=useForm<z.infer<typeof formSchema>>({
         resolver:zodResolver(formSchema),
@@ -38,20 +37,13 @@ const Conversation=()=>{
     const isLodaing =form.formState.isSubmitting;
     const onSubmit= async (values:z.infer<typeof formSchema>)=>{
        try{
-         // Define type for message object
-         type createCompletion = { 
-            role: string;
-            content: string;
-        };
-        const userMessage: createCompletion = { 
-            role: "user",
-            content: values.prompt
-         };
-         const newMessages = [...messages, userMessage];
-        // Assuming newMessages and userMessage are defined elsewhere
 
-        const response = await axios.post('/api/conversation', { messages: newMessages });
-      setMessages((current) => [...current, userMessage, response.data]);
+
+        setMusic(undefined)
+         
+
+        const response = await axios.post('/api/music',values);
+        setMusic(response.data.audio)
       
       form.reset();   
 
@@ -66,11 +58,11 @@ const Conversation=()=>{
     }
     return(
         <div>
-            <Heading title="Conversation"
-            description="Our most advance conversation model "
-            icon={MessageSquare}
-            iconColor="text-violet-500"
-            bgColor="bg-violet-500/10"/>
+            <Heading title="Music generation"
+            description="turn your prompt in to music"
+            icon={MusicIcon}
+            iconColor="text-orange-500"
+            bgColor="bg-orange-500/10"/>
             <div className="px-4 lg:px-8">
              <div>
 
@@ -94,7 +86,7 @@ const Conversation=()=>{
                                     <Input className="border-0 outline-none focus-visible:ring-0
                                      focus-visible:ring-transparent"
                                      disabled={isLodaing}
-                                     placeholder="Write your question hear"
+                                     placeholder="Write your prompt hear"
                                      {...field}
                                      />
                                     
@@ -116,24 +108,17 @@ const Conversation=()=>{
                     </div>
 
                 )}
-                {messages.length===0 && !isLodaing &&(
-                    <Empty lable="No conversation started"/>
+                {!music && !isLodaing &&(
+                    <Empty lable="No music started"/>
                 )}
-            <div className=" flex flex-col-reverse gap-y-4">
-                            {messages.map((message)=> (
-                                <div key={message.content}
-                                className={cn("p-8 w-full flex items-start gap-x-8 rounded-lg",
-                                message.role==="user"?"bg-white border border-black/10":"bg-muted")} >
-                                    {message.role === "user" ? <UserAvatar /> : <BotAvatar/>}
-                                    <p className="text-sm">
-                                    {message.content}
-                                    </p>
-                                </div>
-                            ))}
-                </div>
+                {music&&(<audio
+                controls
+                className="w-full  mt-8" >
+                    <source src={music}/> 
+                </audio>)}
             </div>
             </div>
         </div>
     )
 }
-export default  Conversation
+export default  Musicpage

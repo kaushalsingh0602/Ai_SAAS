@@ -30,9 +30,11 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { useProModal } from "@/hooks/use-prop-model"
 
 
 const ImgePage=()=>{
+    const proModal=useProModal()
     const router= useRouter();
     const [images ,setImages]=useState<string[]>([])
 
@@ -59,7 +61,9 @@ const ImgePage=()=>{
 
 
        }catch(error:any){
-        console.log("error hai bhai yaha pai",error)
+        if(error ?.response?.status===403){
+            proModal.onOpen();
+        }
        } finally{
         router.refresh()
        }

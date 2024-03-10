@@ -22,8 +22,10 @@ import createCompletion from "openai"
 import { cn } from "@/lib/utils"
 import { UserAvatar } from "@/components/user-avatar"
 import { BotAvatar } from "@/components/bot-avater"
+import { useProModal } from "@/hooks/use-prop-model"
 
 const CodePage=()=>{
+    const proModal=useProModal()
     const router= useRouter();
     const[messages, setMessages]=useState<createCompletion[]>([])
     console.log(messages)
@@ -57,7 +59,9 @@ const CodePage=()=>{
 
 
        }catch(error:any){
-        console.log("error hai bhai yaha pai",error)
+        if(error ?.response?.status===403){
+            proModal.onOpen();
+        }
        } finally{
         router.refresh()
        }

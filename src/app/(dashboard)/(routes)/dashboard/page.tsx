@@ -11,7 +11,8 @@ const tools=[
         lable:"Conversation",
         icon:MessageSquare,
         href:"/conversation",
-        color: "text-violet-500"
+        color: "text-violet-500",
+        bgcolor: "text-violet-500/10"
     },
     {
         lable:"Image Generation",

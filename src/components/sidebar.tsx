@@ -6,6 +6,7 @@ import { Montserrat } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { CodeIcon, ImageIcon, LayoutDashboard, MessageSquare, MusicIcon, SettingsIcon, VideoIcon } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import {FreeCounter} from '@/components/free-counter';
 const montserrat=Montserrat({weight:"600",subsets:["latin"]})
 
 
@@ -52,7 +53,19 @@ const routes=[
         href:"/satting"
     },
 ]
-const Sidebar=()=>{
+
+
+interface SidebarProps{
+    apiLimitCount:number;
+
+}
+
+
+
+const Sidebar=({
+    apiLimitCount=0
+}:SidebarProps
+)=>{
     const pathaname=usePathname();
     return(
         <div  className=" space-y-4 py-4 flex flex-col bg-[#111827] text-white">
@@ -87,6 +100,9 @@ const Sidebar=()=>{
 
                 </div>
             </div>
+            <FreeCounter 
+            apiLimitCount={apiLimitCount}
+            />
         </div>
 
     )
